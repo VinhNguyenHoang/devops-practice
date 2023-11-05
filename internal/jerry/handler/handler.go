@@ -12,7 +12,7 @@ func HandleHello(c *gin.Context) {
 	})
 }
 
-func HandleQuestions(c *gin.Context) {
+func HandleRequest(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "reply from server",
 	})

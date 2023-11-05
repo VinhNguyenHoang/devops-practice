@@ -1,7 +1,7 @@
-package caller
+package tom
 
 import (
-	"cs/internal/caller/handler"
+	"cs/internal/tom/handler"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,5 +24,5 @@ func (s *Server) Start() error {
 func init() {
 	router = gin.Default()
 
-	router.GET("/ask", handler.HandleAsk)
+	router.GET("/api", handler.HandleRequest)
 }

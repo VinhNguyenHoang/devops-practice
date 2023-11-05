@@ -6,8 +6,8 @@ package cmd
 import (
 	"fmt"
 
-	"cs/internal/caller"
-	"cs/internal/replier"
+	"cs/internal/jerry"
+	"cs/internal/tom"
 
 	"github.com/spf13/cobra"
 )
@@ -25,14 +25,14 @@ var runCmd = &cobra.Command{
 		fmt.Printf("run called with %s...\n", svName)
 		switch svName {
 		case "1":
-			sv := caller.Server{Address: "localhost:30000"}
+			sv := tom.Server{Address: "localhost:30000"}
 			err = sv.Start()
 			if err != nil {
 				return err
 			}
 
 		case "2":
-			sv := replier.Server{Address: "localhost:30001"}
+			sv := jerry.Server{Address: "localhost:30001"}
 			err = sv.Start()
 			if err != nil {
 				return err

@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func HandleAsk(c *gin.Context) {
+func HandleRequest(c *gin.Context) {
 	resp, err := http.Get("http://localhost:30001/questions")
 	if err != nil {
 		log.Println(err)

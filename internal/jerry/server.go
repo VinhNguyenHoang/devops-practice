@@ -1,7 +1,7 @@
-package replier
+package jerry
 
 import (
-	"cs/internal/replier/handler"
+	"cs/internal/jerry/handler"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,5 +24,6 @@ func (s *Server) Start() error {
 func init() {
 	router = gin.Default()
 
-	router.GET("/questions", handler.HandleQuestions)
+	// todo: put something name more meaningful
+	router.GET("/api", handler.HandleRequest)
 }
