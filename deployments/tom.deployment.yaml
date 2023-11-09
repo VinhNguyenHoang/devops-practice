@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tom
+  labels:
+    app: tom
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tom
+  template:
+    metadata:
+      labels:
+        app: tom
+    spec:
+      containers:
+      - name: tom
+        image: localhost:5001/backend:v1
+        # command: ["run", "-s", "tom"]
+        args: ["run", "-s", "tom"]
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: "1"
+          requests:
+            memory: 256Mi
+            cpu: "0.2"
