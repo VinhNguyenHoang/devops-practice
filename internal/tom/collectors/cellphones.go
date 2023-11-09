@@ -1,8 +1,9 @@
 package collectors
 
 import (
-	"cs/internal/tom/models"
 	"log"
+
+	"cs/internal/tom/models"
 
 	"github.com/gocolly/colly/v2"
 )
@@ -40,12 +41,15 @@ func (clr *CellphonesCollector) GetCollection() []*models.Phone {
 	return clr.Phones
 }
 
-func NewCellphonesCollector() Collector {
+func NewCellphonesCollector(baseURL string) Collector {
 	col := colly.NewCollector()
 
 	collector := &CellphonesCollector{
-		BaseURL: "https://cellphones.com.vn/mobile.html",
-		c:       col,
+		c: col,
+	}
+
+	if baseURL == "" {
+		collector.BaseURL = "https://cellphones.com.vn/mobile.html"
 	}
 
 	collector.initLogic()

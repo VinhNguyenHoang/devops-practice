@@ -2,8 +2,11 @@ package tom
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
+	"time"
 
+	"cs/internal/libs/util"
 	"cs/internal/tom/collectors"
 )
 
@@ -13,8 +16,15 @@ type Server struct {
 }
 
 func (s *Server) Start() error {
+	err := util.DoWithInterval(time.Second*5, startCollectors)
 
-	cellPhonesCollector := collectors.NewCellphonesCollector()
+	e := <-err
+	return e
+}
+
+func startCollectors() error {
+	fmt.Println("starting collector")
+	cellPhonesCollector := collectors.NewCellphonesCollector("")
 
 	err := cellPhonesCollector.RunCollect()
 	if err != nil {
