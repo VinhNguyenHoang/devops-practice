@@ -1,12 +1,11 @@
 package tom
 
 import (
-	"cs/internal/tom/handler"
+	"encoding/json"
+	"os"
 
-	"github.com/gin-gonic/gin"
+	"cs/internal/tom/collectors"
 )
-
-var router *gin.Engine
 
 type Server struct {
 	// address with port
@@ -14,15 +13,22 @@ type Server struct {
 }
 
 func (s *Server) Start() error {
-	err := router.Run(s.Address)
+
+	cellPhonesCollector := collectors.NewCellphonesCollector()
+
+	err := cellPhonesCollector.RunCollect()
 	if err != nil {
 		return err
 	}
+
+	data := cellPhonesCollector.GetCollection()
+
+	b, _ := json.Marshal(data)
+
+	err = os.WriteFile("tmp/data.txt", b, 0777)
+	if err != nil {
+		panic(err)
+	}
+
 	return nil
-}
-
-func init() {
-	router = gin.Default()
-
-	router.GET("/api", handler.HandleRequest)
 }

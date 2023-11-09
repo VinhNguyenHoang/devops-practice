@@ -24,14 +24,14 @@ var runCmd = &cobra.Command{
 		}
 		fmt.Printf("run called with %s...\n", svName)
 		switch svName {
-		case "1":
+		case "tom":
 			sv := tom.Server{Address: "0.0.0.0:30000"}
 			err = sv.Start()
 			if err != nil {
 				return err
 			}
 
-		case "2":
+		case "jerry":
 			sv := jerry.Server{Address: "0.0.0.0:30001"}
 			err = sv.Start()
 			if err != nil {
