@@ -1,44 +1,38 @@
 package tom
 
 import (
-	"encoding/json"
-	"fmt"
-	"os"
+	"context"
 	"time"
 
+	"cs/internal/libs/database/mongodb"
 	"cs/internal/libs/util"
-	"cs/internal/tom/collectors"
+	"cs/internal/tom/handler"
 )
 
 type Server struct {
-	// address with port
-	Address string
+	mdb *mongodb.MongoDBImpl
+}
+
+// TODO: passin the db uri when init
+func NewServer() (*Server, error) {
+	dbimlp := &mongodb.MongoDBImpl{
+		URI: "mongodb://root@localhost:27017",
+	}
+
+	err := dbimlp.Init(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	s := &Server{
+		mdb: dbimlp,
+	}
+
+	return s, nil
 }
 
 func (s *Server) Start() error {
-	err := util.DoWithInterval(time.Second*5, startCollectors)
+	err := util.DoWithInterval(time.Second*5, handler.StartCollectors)
 
 	e := <-err
 	return e
-}
-
-func startCollectors() error {
-	fmt.Println("starting collector")
-	cellPhonesCollector := collectors.NewCellphonesCollector("")
-
-	err := cellPhonesCollector.RunCollect()
-	if err != nil {
-		return err
-	}
-
-	data := cellPhonesCollector.GetCollection()
-
-	b, _ := json.Marshal(data)
-
-	err = os.WriteFile("tmp/data.txt", b, 0777)
-	if err != nil {
-		panic(err)
-	}
-
-	return nil
 }

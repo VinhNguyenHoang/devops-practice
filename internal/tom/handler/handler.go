@@ -1,30 +1,30 @@
 package handler
 
 import (
-	"net/http"
+	"encoding/json"
+	"fmt"
+	"os"
 
-	"github.com/gin-gonic/gin"
+	"cs/internal/tom/collectors"
 )
 
-// func HandleRequest(c *gin.Context) {
-// 	resp, err := http.Get("http://localhost:30001/questions")
-// 	if err != nil {
-// 		log.Println(err)
-// 		return
-// 	}
-// 	body, err := io.ReadAll(resp.Body)
-// 	if err != nil {
-// 		log.Println(err)
-// 		return
-// 	}
+func StartCollectors() error {
+	fmt.Println("starting collector")
+	cellPhonesCollector := collectors.NewCellphonesCollector("")
 
-// 	c.JSON(http.StatusOK, gin.H{
-// 		"message": string(body),
-// 	})
-// }
+	err := cellPhonesCollector.RunCollect()
+	if err != nil {
+		return err
+	}
 
-func HandleRequest(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "reply from server Tom",
-	})
+	data := cellPhonesCollector.GetCollection()
+
+	b, _ := json.Marshal(data)
+
+	err = os.WriteFile("tmp/data.txt", b, 0777)
+	if err != nil {
+		panic(err)
+	}
+
+	return nil
 }
