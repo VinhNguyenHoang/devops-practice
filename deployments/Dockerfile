@@ -10,7 +10,10 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # copy source code
-COPY . ./
+COPY *.go .
+COPY cmd/ ./cmd/
+COPY internal/ ./internal/
+
 
 # compile go application
 RUN CGO_ENABLED=0 GOOS=linux go build -o /backend
