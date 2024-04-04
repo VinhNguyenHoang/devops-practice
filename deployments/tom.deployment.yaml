@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: tom
-        image: localhost:5001/backend:v1
+        image: localhost:5001/personal/backend
+        imagePullPolicy: IfNotPresent
         # command: ["run", "-s", "tom"]
         args: ["run", "-s", "tom"]
         ports:
