@@ -10,7 +10,8 @@ tag=$imageName:$timestamp
 dir="$(dirname "$(realpath "$0")")"
 
 # # build
-docker build -t "$tag" -f "$dir"/Dockerfile . --progress=plain --no-cache
+# docker build -t "$tag" -f "$dir"/Dockerfile . --progress=plain --no-cache
+docker build -t "$tag" -f "$dir"/Dockerfile . --no-cache
 
 # # echo latest tag
 # echo "$tag"
