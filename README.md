@@ -31,3 +31,5 @@ curl -sS -H "Accept: application/vnd.docker.distribution.manifest.v2+json" -o /d
 ### delete images's manifest
 
 curl -X DELETE "http://localhost:5001/v2/<repository-name>/manifests/<tag>"
+
+k label nodes kind-control-plane name=node1
