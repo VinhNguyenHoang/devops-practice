@@ -4,6 +4,12 @@ metadata:
   name: mongo-account
   namespace: default
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kafka
+  namespace: kafka
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
