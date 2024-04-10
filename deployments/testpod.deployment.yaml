@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod
+spec:
+  containers:
+  - name: test-container
+    image: busybox
+    command: ["/bin/sh", "-c", "nslookup mongo", "telnet mongo 27017"]
+    resources:
+      limits:
+        memory: "64Mi"
+        cpu: "50m"
+      requests:
+        memory: "32Mi"
+        cpu: "10m"
