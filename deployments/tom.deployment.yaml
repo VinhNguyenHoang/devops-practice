@@ -16,10 +16,10 @@ spec:
     spec:
       containers:
       - name: tom
-        image: localhost:5001/personal/backend
-        imagePullPolicy: IfNotPresent
+        image: localhost:5001/personal/backend:latest
+        imagePullPolicy: Always
         # command: ["run", "-s", "tom"]
-        args: ["run", "-s", "tom"]
+        args: ["tom"]
         ports:
         - containerPort: 80
         resources:
