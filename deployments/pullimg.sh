@@ -2,12 +2,14 @@
 
 BITNAMI_MGO_IMG="bitnami/mongodb:7.0.3-debian-11-r6"
 BITNAMI_DCV_IMG="bitnami/kubectl:1.28.4-debian-11-r0"
+BITNAMI_INCR_IMG="bitnami/os-shell:11-debian-11-r91"
 REGISTRY_REPO="docker.io"
 REGISTRY_HOST="localhost:5001"
 
 image_names=(
     "$BITNAMI_MGO_IMG"
     "$BITNAMI_DCV_IMG"
+    "$BITNAMI_INCR_IMG"
 )
 
 for img_name in "${image_names[@]}"; do
