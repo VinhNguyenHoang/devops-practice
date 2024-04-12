@@ -13,7 +13,7 @@
 ## @param global.namespaceOverride Override the namespace for resource deployed by the chart, but can itself be overridden by the local namespaceOverride
 ##
 global:
-  imageRegistry: ""
+  imageRegistry: "localhost:5001"
   ## E.g.
   ## imagePullSecrets:
   ##   - myRegistryKeySecretName
@@ -142,7 +142,7 @@ image:
   pullSecrets: []
   ## Set to true if you would like to see extra information on logs
   ##
-  debug: false
+  debug: true
 
 ## @param schedulerName Name of the scheduler (other than default) to dispatch pods
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -150,7 +150,7 @@ image:
 schedulerName: ""
 ## @param architecture MongoDB(&reg;) architecture (`standalone` or `replicaset`)
 ##
-architecture: standalone
+architecture: replicaset
 ## @param useStatefulSet Set to true to use a StatefulSet instead of a Deployment (only when `architecture=standalone`)
 ##
 useStatefulSet: false
@@ -174,9 +174,9 @@ auth:
   ## @param auth.passwords List of passwords for the custom users set at `auth.usernames`
   ## @param auth.databases List of custom databases to be created during the initialization
   ##
-  usernames: []
-  passwords: []
-  databases: []
+  usernames: ["user1"]
+  passwords: ["password1"]
+  databases: ["stg"]
   ## @param auth.username DEPRECATED: use `auth.usernames` instead
   ## @param auth.password DEPRECATED: use `auth.passwords` instead
   ## @param auth.database DEPRECATED: use `auth.databases` instead
