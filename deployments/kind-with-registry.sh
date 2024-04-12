@@ -67,4 +67,4 @@ EOF
 # 6. Custom configs
 docker exec kind-control-plane /bin/bash -c "mkdir mnt/data"
 
-kubectl label nodes kind-control-plane name=node1
+# kubectl label nodes kind-control-plane name=node1
