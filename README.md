@@ -33,3 +33,27 @@ curl -sS -H "Accept: application/vnd.docker.distribution.manifest.v2+json" -o /d
 curl -X DELETE "http://localhost:5001/v2/<repository-name>/manifests/<tag>"
 
 k label nodes kind-control-plane name=node1
+
+MongoDB&reg; can be accessed on the following DNS name(s) and ports from within your cluster:
+
+    mongodb-0.mongodb-headless.default.svc.cluster.local:27017
+    mongodb-1.mongodb-headless.default.svc.cluster.local:27017
+
+To get the root password run:
+
+    export MONGODB_ROOT_PASSWORD=$(kubectl get secret --namespace default mongodb -o jsonpath="{.data.mongodb-root-password}" | base64 -d)
+
+To get the password for "user1" run:
+
+    export MONGODB_PASSWORD=$(kubectl get secret --namespace default mongodb -o jsonpath="{.data.mongodb-passwords}" | base64 -d | awk -F',' '{print $1}')
+
+To get the password for "user2" run:
+
+    export MONGODB_PASSWORD=$(kubectl get secret --namespace default mongodb -o jsonpath="{.data.mongodb-passwords}" | base64 -d | awk -F',' '{print $2}')
+
+To connect to your database, create a MongoDB&reg; client container:
+
+    kubectl run --namespace default mongodb-client --rm --tty -i --restart='Never' --env="MONGODB_ROOT_PASSWORD=$MONGODB_ROOT_PASSWORD" --image localhost:5001/bitnami/mongodb:7.0.3-debian-11-r6 --command -- bash
+
+Then, run the following command:
+mongosh admin --host "mongodb-0.mongodb-headless.default.svc.cluster.local:27017,mongodb-1.mongodb-headless.default.svc.cluster.local:27017" --authenticationDatabase admin -u $MONGODB_ROOT_USER -p $MONGODB_ROOT_PASSWORD

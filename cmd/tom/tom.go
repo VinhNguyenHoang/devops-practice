@@ -16,6 +16,7 @@ var (
 
 			sv, err := core.NewServer()
 			if err != nil {
+				log.Fatal(err)
 				return err
 			}
 

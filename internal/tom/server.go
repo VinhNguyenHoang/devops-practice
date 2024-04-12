@@ -2,11 +2,9 @@ package tom
 
 import (
 	"context"
-	"time"
+	"log"
 
 	"cs/internal/libs/database/mongodb"
-	"cs/internal/libs/util"
-	"cs/internal/tom/handler"
 )
 
 type Server struct {
@@ -16,7 +14,7 @@ type Server struct {
 // TODO: passin the db uri when init
 func NewServer() (*Server, error) {
 	dbimlp := &mongodb.MongoDBImpl{
-		URI: "mongodb://root@localhost:27017",
+		URI: "mongodb://user1:password1@mongodb-0.mongodb-headless.default.svc.cluster.local:27017,mongodb-1.mongodb-headless.default.svc.cluster.local:27017/stg",
 	}
 
 	err := dbimlp.Init(context.Background())
@@ -31,8 +29,10 @@ func NewServer() (*Server, error) {
 }
 
 func (s *Server) Start() error {
-	err := util.DoWithInterval(time.Second*5, handler.StartCollectors)
-
-	e := <-err
-	return e
+	db := s.mdb.GetDatabase("stg")
+	if db == nil {
+		log.Printf("database is empty")
+	}
+	log.Println(db.Name())
+	return nil
 }

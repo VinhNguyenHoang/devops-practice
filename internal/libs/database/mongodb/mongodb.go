@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"log"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -19,6 +20,9 @@ func (c *MongoDBImpl) Init(ctx context.Context) error {
 		return err
 	}
 	c.DB = client
+
+	log.Println("Init database successful...")
+
 	return nil
 }
 
