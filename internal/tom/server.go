@@ -2,10 +2,19 @@ package tom
 
 import (
 	"context"
-	"log"
+	"time"
 
 	"cs/internal/libs/database/mongodb"
+	"cs/internal/libs/util"
 )
+
+var Collection = "blocks"
+
+type Block struct {
+	BlockInt  int
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
 
 type Server struct {
 	mdb *mongodb.MongoDBImpl
@@ -14,10 +23,11 @@ type Server struct {
 // TODO: passin the db uri when init
 func NewServer() (*Server, error) {
 	dbimlp := &mongodb.MongoDBImpl{
-		URI: "mongodb://user1:password1@mongodb-0.mongodb-headless.default.svc.cluster.local:27017,mongodb-1.mongodb-headless.default.svc.cluster.local:27017/stg",
+		URI:    "mongodb://user1:password1@mongodb-0.mongodb-headless.default.svc.cluster.local:27017,mongodb-1.mongodb-headless.default.svc.cluster.local:27017",
+		DBName: "stg",
 	}
 
-	err := dbimlp.Init(context.Background())
+	err := dbimlp.Init(context.Background(), Collection)
 	if err != nil {
 		return nil, err
 	}
@@ -29,10 +39,19 @@ func NewServer() (*Server, error) {
 }
 
 func (s *Server) Start() error {
-	db := s.mdb.GetDatabase("stg")
-	if db == nil {
-		log.Printf("database is empty")
+	err := util.DoWithInterval(5*time.Second, func() error {
+		block := &Block{
+			BlockInt:  int(time.Now().Unix()),
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		}
+		err := s.mdb.Insert(context.TODO(), Collection, block)
+		return err
+	})
+
+	e := <-err
+	if e != nil {
+		return e
 	}
-	log.Println(db.Name())
 	return nil
 }
