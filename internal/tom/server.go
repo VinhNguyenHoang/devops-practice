@@ -39,6 +39,14 @@ func NewServer() (*Server, error) {
 }
 
 func (s *Server) Start() error {
+	// start watch
+	go func() {
+		err := s.mdb.StartWatchStream(context.Background(), Collection)
+		if err != nil {
+			return
+		}
+	}()
+
 	err := util.DoWithInterval(5*time.Second, func() error {
 		block := &Block{
 			BlockInt:  int(time.Now().Unix()),

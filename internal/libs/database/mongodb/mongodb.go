@@ -69,3 +69,22 @@ func (c *MongoDBImpl) Insert(ctx context.Context, colName string, doc interface{
 func (c *MongoDBImpl) Query(ctx context.Context, args ...interface{}) {
 
 }
+
+func (c *MongoDBImpl) StartWatchStream(ctx context.Context, colName string) error {
+	pipeline := mongo.Pipeline{}
+	cs, err := c.cols[colName].Watch(ctx, pipeline)
+	if err != nil {
+		log.Println(err.Error())
+		return err
+	}
+
+	defer cs.Close(ctx)
+
+	log.Printf("Start watching collection %s\n", colName)
+	for cs.Next(ctx) {
+		item := cs.Current
+		log.Printf("New item %d\n", item)
+	}
+
+	return nil
+}
