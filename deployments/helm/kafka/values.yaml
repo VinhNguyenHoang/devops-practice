@@ -51,7 +51,69 @@ commonLabels: {}
 commonAnnotations: {}
 ## @param extraDeploy Array of extra objects to deploy with the release
 ##
-extraDeploy: []
+extraDeploy:
+  - |
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: {{ include "common.names.fullname" . }}-connect
+      labels: {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+        app.kubernetes.io/component: connector
+    spec:
+      replicas: 1
+      selector:
+        matchLabels: {{- include "common.labels.matchLabels" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 6 }}
+          app.kubernetes.io/component: connector
+      template:
+        metadata:
+          labels: {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 8 }}
+            app.kubernetes.io/component: connector
+        spec:
+          containers:
+            - name: connect
+              image: localhost:5001/bitnami/kafka-connect:latest
+              imagePullPolicy: IfNotPresent
+              ports:
+                - name: connector
+                  containerPort: 8083
+              volumeMounts:
+                - name: configuration
+                  mountPath: /bitnami/kafka/config
+          volumes:
+            - name: configuration
+              configMap:
+                name: {{ include "common.names.fullname" . }}-connect
+  - |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: {{ include "common.names.fullname" . }}-connect
+      labels: {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+        app.kubernetes.io/component: connector
+    data:
+      connect-standalone.properties: |-
+        bootstrap.servers = {{ include "common.names.fullname" . }}.{{ include "common.names.namespace" . }}.svc.{{ .Values.clusterDomain }}:{{ .Values.service.ports.client }}
+        key.converter = org.apache.kafka.connect.json.JsonConverter
+        value.converter = org.apache.kafka.connect.json.JsonConverter
+        offset.storage.file.filename=/tmp/connect.offsets
+        ...
+      mongodb.properties: |-
+        connection.uri=mongodb://root:root@mongodb-0.mongodb-headless.default.svc.cluster.local:27017,mongodb-1.mongodb-headless.default.svc.cluster.local:27017
+        ...
+  - |
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: {{ include "common.names.fullname" . }}-connect
+      labels: {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+        app.kubernetes.io/component: connector
+    spec:
+      ports:
+        - protocol: TCP
+          port: 8083
+          targetPort: connector
+      selector: {{- include "common.labels.matchLabels" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+        app.kubernetes.io/component: connector
 ## @param serviceBindings.enabled Create secret for service binding (Experimental)
 ## Ref: https://servicebinding.io/service-provider/
 ##
