@@ -5,6 +5,8 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
+acceptM="application/vnd.docker.distribution.manifest.v2+json"
+acceptML="application/vnd.docker.distribution.manifest.list.v2+json"
 registry='localhost:5001'
 name="$1"
 
@@ -13,9 +15,12 @@ if [ -z "$name" ]; then
     exit 1
 fi
 
-curl -v -sSL -X DELETE "http://${registry}/v2/${name}/manifests/$(
+curl -H "Accept: ${acceptM}" \
+    -H "Accept: ${acceptML}" \
+    -v -sSL -X DELETE "http://${registry}/v2/${name}/manifests/$(
     curl -sSL -I \
-        -H "Accept: application/vnd.docker.distribution.manifest.v2+json" \
+        -H "Accept: ${acceptM}" \
+        -H "Accept: ${acceptML}" \
         "http://${registry}/v2/${name}/manifests/$(
             curl -sSL "http://${registry}/v2/${name}/tags/list" | jq -r '.tags[0]'
         )" \
@@ -23,4 +28,4 @@ curl -v -sSL -X DELETE "http://${registry}/v2/${name}/manifests/$(
     | tr -d $'\r' \
 )"
 
-docker exec -it kind-registry bin/registry garbage-collect /etc/docker/registry/config.yml
+docker exec kind-registry /bin/registry garbage-collect   /etc/docker/registry/config.yml --delete-untagged
