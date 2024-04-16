@@ -1,0 +1,7 @@
+{
+    "name": "mongodb-sink",
+    "config": {
+        "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
+        "topics": "mongodb.stg.blocks"
+    }
+}
