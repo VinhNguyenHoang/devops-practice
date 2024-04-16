@@ -51,6 +51,7 @@ commonLabels: {}
 commonAnnotations: {}
 ## @param extraDeploy Array of extra objects to deploy with the release
 ##
+# extraDeploy: []
 extraDeploy:
   - |
     apiVersion: apps/v1
@@ -72,7 +73,7 @@ extraDeploy:
           containers:
             - name: connect
               image: localhost:5001/bitnami/kafka-connect:latest
-              imagePullPolicy: IfNotPresent
+              imagePullPolicy: Always
               ports:
                 - name: connector
                   containerPort: 8083
@@ -92,13 +93,20 @@ extraDeploy:
         app.kubernetes.io/component: connector
     data:
       connect-standalone.properties: |-
-        bootstrap.servers = {{ include "common.names.fullname" . }}.{{ include "common.names.namespace" . }}.svc.{{ .Values.clusterDomain }}:{{ .Values.service.ports.client }}
+        # bootstrap.servers = {{ include "common.names.fullname" . }}.{{ include "common.names.namespace" . }}.svc.{{ .Values.clusterDomain }}:{{ .Values.service.ports.client }}
+        bootstrap.servers = {{ include "common.names.fullname" . }}-controller-0.{{ include "common.names.fullname" . }}-controller-headless.{{ include "common.names.namespace" . }}.svc.{{ .Values.clusterDomain }}:{{ .Values.service.ports.client }}
         key.converter = org.apache.kafka.connect.json.JsonConverter
         value.converter = org.apache.kafka.connect.json.JsonConverter
         offset.storage.file.filename=/tmp/connect.offsets
+        plugin.path=/opt/bitnami/kafka/libs,/bitnami/kafka/plugins
+        plugin.discovery=service_load
         ...
       mongodb.properties: |-
-        connection.uri=mongodb://root:root@mongodb-0.mongodb-headless.default.svc.cluster.local:27017,mongodb-1.mongodb-headless.default.svc.cluster.local:27017
+        name=mongodb-connector
+        connector.class=io.debezium.connector.mongodb.MongoDbConnector
+        mongodb.connection.string=mongodb://root:root@mongodb-0.mongodb-headless.default.svc.cluster.local:27017,mongodb-1.mongodb-headless.default.svc.cluster.local:27017/?replicaSet=rs0
+        topic.prefix=stg
+        mongodb.connection.mode=replica_set
         ...
   - |
     apiVersion: v1
@@ -215,7 +223,8 @@ listeners:
   ## @param listeners.client.sslClientAuth Optional. If SASL_SSL is enabled, configure mTLS TLS authentication type. If SSL protocol is enabled, overrides tls.authType for this listener. Allowed values are 'none', 'requested' and 'required'
   client:
     containerPort: 9092
-    protocol: SASL_PLAINTEXT
+    # protocol: SASL_PLAINTEXT
+    protocol: PLAINTEXT
     name: CLIENT
     sslClientAuth: ""
   ## @param listeners.controller.name Name for the Kafka controller listener
@@ -227,6 +236,7 @@ listeners:
     name: CONTROLLER
     containerPort: 9093
     protocol: SASL_PLAINTEXT
+    # protocol: PLAINTEXT
     sslClientAuth: ""
   ## @param listeners.interbroker.name Name for the Kafka inter-broker listener
   ## @param listeners.interbroker.containerPort Port for the Kafka inter-broker listener
@@ -235,6 +245,7 @@ listeners:
   interbroker:
     containerPort: 9094
     protocol: SASL_PLAINTEXT
+    # protocol: PLAINTEXT
     name: INTERNAL
     sslClientAuth: ""
   ## @param listeners.external.containerPort Port for the Kafka external listener
