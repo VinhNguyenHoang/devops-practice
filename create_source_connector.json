@@ -1,10 +1,8 @@
 {
   "name": "mongodb-source",
   "config": {
-    "connector.class": "io.debezium.connector.mongodb.MongoDbConnector",
+    "connector.class": "com.mongodb.kafka.connect.MongoSourceConnector",
     "topic.prefix": "mongodb",
-    "mongodb.connection.string": "mongodb://root:root@mongodb-0.mongodb-headless.default.svc.cluster.local:27017,mongodb-1.mongodb-headless.default.svc.cluster.local:27017/?replicaSet=rs0",
-    "transforms":"unwrap",
-    "transforms.unwrap.type":"io.debezium.connector.mongodb.transforms.ExtractNewDocumentState"
+    "connection.uri": "mongodb://root:root@mongodb-0.mongodb-headless.default.svc.cluster.local:27017,mongodb-1.mongodb-headless.default.svc.cluster.local:27017/?replicaSet=rs0"
   }
 }
