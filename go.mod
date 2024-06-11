@@ -1,6 +1,6 @@
 module cs
 
-go 1.21.3
+go 1.19
 
 require (
 	github.com/gin-gonic/gin v1.9.1
