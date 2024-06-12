@@ -25,5 +25,5 @@ func init() {
 	router = gin.Default()
 
 	// todo: put something name more meaningful
-	router.GET("/api", handler.HandleRequest)
+	router.GET("/api", handler.HandleGETRequest)
 }

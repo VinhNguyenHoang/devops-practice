@@ -4,6 +4,7 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"cs/cmd/jerry"
 	"cs/cmd/tom"
 	"os"
 
@@ -24,4 +25,5 @@ func Execute() {
 
 func init() {
 	rootCmd.AddCommand(tom.TomCmd)
+	rootCmd.AddCommand(jerry.JerryCmd)
 }
