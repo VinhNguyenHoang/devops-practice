@@ -14,7 +14,7 @@ var (
 		RunE: func(cmd *cobra.Command, args []string) error {
 			log.Println("running jerry service")
 
-			sv := jerry.Server{"0.0.0.0:30000"}
+			sv := jerry.Server{Address: "0.0.0.0:30000"}
 			if err := sv.Start(); err != nil {
 				return err
 			}
