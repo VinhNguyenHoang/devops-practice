@@ -45,7 +45,9 @@ func (s *Server) Start() (err error) {
 }
 
 func initTracer() (*sdktrace.TracerProvider, error) {
-	traceExporter, err := otlptracehttp.New(context.Background(), otlptracehttp.WithInsecure())
+	traceExporter, err := otlptracehttp.New(context.Background(),
+		otlptracehttp.WithInsecure(),
+		otlptracehttp.WithEndpoint("jaeger-collector.istio-system.svc.cluster.local:4318"))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create trace exporter: %w", err)
 	}
