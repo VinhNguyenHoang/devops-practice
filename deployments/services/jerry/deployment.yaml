@@ -31,7 +31,10 @@ spec:
       - name: jerry
         image: localhost:5001/personal/backend:latest
         imagePullPolicy: Always
-        args: ["jerry"]
+        args:
+          - jerry
+          - -p=30000
+          - -c=jaeger-collector.istio-system.svc.cluster.local:4318
         ports:
         - containerPort: 30000
         resources:
