@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"cs/cmd/jerry"
+	"cs/cmd/spike"
 	"cs/cmd/tom"
 	"os"
 
@@ -26,4 +27,5 @@ func Execute() {
 func init() {
 	rootCmd.AddCommand(tom.TomCmd)
 	rootCmd.AddCommand(jerry.JerryCmd)
+	rootCmd.AddCommand(spike.SpikeCmd)
 }

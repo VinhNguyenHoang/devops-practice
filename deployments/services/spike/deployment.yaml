@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spike-service
+  namespace: backend
+spec:
+  selector:
+    app: spike-pod
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 30000
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spike-deployment
+  labels:
+    app: spike-deployment
+  namespace: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spike-pod
+  template:
+    metadata:
+      labels:
+        app: spike-pod
+    spec:
+      containers:
+      - name: spike
+        image: localhost:5001/personal/backend:latest
+        imagePullPolicy: Always
+        args:
+          - spike
+          - -p=30000
+          - -c=jaeger-collector.istio-system.svc.cluster.local:4318
+        ports:
+        - containerPort: 30000
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: "1"
+          requests:
+            memory: 256Mi
+            cpu: "0.2"

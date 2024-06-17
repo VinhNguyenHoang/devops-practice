@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: spike-route
+spec:
+  hosts:
+  - spike.backend.svc.cluster.local
+  http:
+  - name: "world"
+    match:
+    - uri:
+        prefix: "/world"
+    route:
+    - destination:
+        host: spike.backend.svc.cluster.local
+        port:
+          number: 30000
