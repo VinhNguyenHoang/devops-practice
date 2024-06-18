@@ -5,8 +5,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -21,7 +19,7 @@ func HandleRequest(c *gin.Context) {
 	log.Println("Header:", header)
 
 	reqCtx := c.Request.Context()
-	span := trace.SpanFromContext(otel.GetTextMapPropagator().Extract(reqCtx, propagation.HeaderCarrier(c.Request.Header)))
+	span := trace.SpanFromContext(reqCtx)
 	defer span.End()
 
 	c.JSON(http.StatusOK, gin.H{
