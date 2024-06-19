@@ -3,6 +3,7 @@ package metrics
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
@@ -44,4 +45,23 @@ func InitTracer(serviceName, collectorURL string) (*sdktrace.TracerProvider, err
 	otel.SetTracerProvider(tp)
 	otel.SetTextMapPropagator(propagation.TraceContext{})
 	return tp, nil
+}
+
+func propagateHeaders(a *http.Request, b *http.Request) {
+	headers := []string{
+		"portal",
+		"device",
+		"user",
+		"travel",
+		"x-request-id",
+		"x-b3-traceid",
+		"x-b3-spanid",
+		"x-b3-parentspanid",
+		"x-b3-sampled",
+		"x-b3-flags",
+		"x-ot-span-context",
+	}
+	for _, header := range headers {
+		b.Header.Add(header, a.Header.Get(header))
+	}
 }
