@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 
+	"cs/internal/libs/bootstrap"
+
 	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
@@ -14,8 +16,8 @@ import (
 
 var tracer = otel.Tracer("test-tracer")
 
-func ExportEndpoints() map[string]func(c *gin.Context) {
-	return map[string]func(c *gin.Context){
+func ExportEndpoints() map[string]bootstrap.GinHandler {
+	return map[string]bootstrap.GinHandler{
 		"/hello": HandleRequest,
 	}
 }
@@ -57,23 +59,4 @@ func HandleRequest(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "reply from server Jerry:" + replyFromSpike,
 	})
-}
-
-func propagateHeaders(a *http.Request, b *http.Request) {
-	headers := []string{
-		"portal",
-		"device",
-		"user",
-		"travel",
-		"x-request-id",
-		"x-b3-traceid",
-		"x-b3-spanid",
-		"x-b3-parentspanid",
-		"x-b3-sampled",
-		"x-b3-flags",
-		"x-ot-span-context",
-	}
-	for _, header := range headers {
-		b.Header.Add(header, a.Header.Get(header))
-	}
 }

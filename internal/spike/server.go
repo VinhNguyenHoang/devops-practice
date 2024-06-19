@@ -4,11 +4,13 @@ import (
 	"log"
 	"net/http"
 
+	"cs/internal/libs/bootstrap"
+
 	"github.com/gin-gonic/gin"
 )
 
-func ExportEndpoints() map[string]func(c *gin.Context) {
-	return map[string]func(c *gin.Context){
+func ExportEndpoints() map[string]bootstrap.GinHandler {
+	return map[string]bootstrap.GinHandler{
 		"/world": HandleRequest,
 	}
 }

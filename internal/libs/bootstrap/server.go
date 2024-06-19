@@ -18,7 +18,9 @@ type HTTPServer struct {
 	TraceCollectorEndpoint string
 }
 
-func (s *HTTPServer) Start(endpointMap map[string]func(c *gin.Context)) (err error) {
+type GinHandler = func(*gin.Context)
+
+func (s *HTTPServer) Start(endpointMap map[string]GinHandler) (err error) {
 	tp, err := metrics.InitTracer(s.Name, s.TraceCollectorEndpoint)
 	if err != nil {
 		return err
@@ -31,7 +33,7 @@ func (s *HTTPServer) Start(endpointMap map[string]func(c *gin.Context)) (err err
 	s.router = gin.Default()
 	s.router.Use(otelgin.Middleware(s.Name))
 
-	s.RegisterAPIs(endpointMap)
+	s.registerAPIs(endpointMap)
 
 	err = s.router.Run(s.Address)
 	if err != nil {
@@ -40,7 +42,7 @@ func (s *HTTPServer) Start(endpointMap map[string]func(c *gin.Context)) (err err
 	return nil
 }
 
-func (s *HTTPServer) RegisterAPIs(endpoints map[string]func(c *gin.Context)) {
+func (s *HTTPServer) registerAPIs(endpoints map[string]GinHandler) {
 	for endpoint, handler := range endpoints {
 		s.router.GET(endpoint, handler)
 	}
