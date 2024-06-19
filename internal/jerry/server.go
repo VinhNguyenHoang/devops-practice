@@ -10,7 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
-	"go.opentelemetry.io/otel/trace"
 )
 
 var tracer = otel.Tracer("test-tracer")
@@ -25,8 +24,6 @@ func HandleRequest(c *gin.Context) {
 	log.Println("Received request")
 
 	reqCtx := c.Request.Context()
-	span := trace.SpanFromContext(reqCtx)
-	defer span.End()
 
 	// call to Spike
 	spikeURL := os.Getenv("SPIKE_URL")
