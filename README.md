@@ -1,3 +1,3 @@
-# cellphones
+# devops-practice
 
-My playground to test ideas and stuffs!
+My playground to test ideas and practice devops!
